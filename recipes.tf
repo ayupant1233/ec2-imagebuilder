@@ -1,0 +1,54 @@
+resource "aws_imagebuilder_container_recipe" "container_image" {
+
+  depends_on = [
+    aws_ecr_repository.ecr_test_repo
+  ]
+
+  name    = var.image_name
+  version = "1.0.0"
+
+  container_type    = "DOCKER"
+  parent_image      = "amazonlinux:latest"
+  working_directory = "/tmp"
+
+  target_repository {
+    repository_name = var.ecr_name
+    service         = "ECR"
+  }
+
+  instance_configuration {
+
+    block_device_mapping {
+      device_name = "/dev/xvda"
+
+      ebs {
+        delete_on_termination = true
+        volume_size           = var.ebs_root_vol_size
+        volume_type           = "gp2"
+        encrypted             = true
+        kms_key_id            = aws_kms_key.ecr-test.arn
+      }
+    }
+
+  }
+
+  component {
+    component_arn = "arn:aws:imagebuilder:${var.aws_region}:aws:component/update-linux/x.x.x"
+  }
+
+  component {
+    component_arn = "arn:aws:imagebuilder:${var.aws_region}:aws:component/stig-build-linux-medium/x.x.x"
+  }
+
+  # Add more component ARNs here to customize the recipe
+  # You can also add custom components if you defined any in components.tf
+  /* component {
+    component_arn = aws_imagebuilder_component.example_custom_component.arn
+  } */
+
+  dockerfile_template_data = <<EOF
+FROM {{{ imagebuilder:parentImage }}}
+{{{ imagebuilder:environments }}}
+{{{ imagebuilder:components }}}
+EOF
+}
