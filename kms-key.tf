@@ -1,5 +1,4 @@
-/* As ecr-test is intended to enable a Key Administrator in a multi-account structure
-the action and resource definition is broad */
+# Define your KMS key policy here
 data "aws_iam_policy_document" "ecr-test" {
   statement {
     sid       = "Enable IAM User Permissions"
@@ -20,7 +19,7 @@ data "aws_iam_policy_document" "ecr-test" {
     resources = ["*"]
 
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = [
         "arn:aws:iam::${var.account_id}:role/${local.kms_admin_role_name}"
       ]
@@ -41,9 +40,10 @@ data "aws_iam_policy_document" "ecr-test" {
     resources = ["*"]
 
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = [
-        "arn:aws:iam::${var.account_id}:role/${local.kms_admin_role_name}"
+        "arn:aws:iam::${var.account_id}:role/${local.kms_admin_role_name}",
+        # Add any other ARNs that need access to the KMS key here
       ]
     }
   }
@@ -59,9 +59,10 @@ data "aws_iam_policy_document" "ecr-test" {
     resources = ["*"]
 
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = [
-        "arn:aws:iam::${var.account_id}:role/${local.kms_admin_role_name}"
+        "arn:aws:iam::${var.account_id}:role/${local.kms_admin_role_name}",
+        # Add any other ARNs that need access to the KMS key here
       ]
     }
 
@@ -88,3 +89,4 @@ resource "aws_kms_alias" "ecr-test" {
   name          = "alias/${var.kms_key_alias}"
   target_key_id = aws_kms_key.ecr-test.key_id
 }
+

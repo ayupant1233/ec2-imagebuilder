@@ -28,7 +28,7 @@ resource "aws_subnet" "ecr_test_public" {
 
   vpc_id                  = aws_vpc.ecr_test.id
   cidr_block              = "192.168.0.0/24"
-  availability_zone       = "${var.aws_region}a"
+  availability_zone       = "${var.aws_region}b"
   map_public_ip_on_launch = true
   tags = {
     Name = "${var.vpc_name}-public"
@@ -43,7 +43,7 @@ resource "aws_subnet" "ecr_test_private" {
 
   vpc_id            = aws_vpc.ecr_test.id
   cidr_block        = "192.168.1.0/24"
-  availability_zone = "${var.aws_region}a"
+  availability_zone = "${var.aws_region}b"
 
   tags = {
     Name = "${var.vpc_name}-private"

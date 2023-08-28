@@ -5,7 +5,6 @@ resource "aws_imagebuilder_image" "al2_container_latest" {
 
   tags = {
     Name    = var.image_name
-    BuiltBy = "hardening-container-pipeline"
   }
 
   depends_on = [
